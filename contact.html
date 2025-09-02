@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - NEXUS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: conic-gradient(from 180deg at 50% 50%, #0A0C34 0deg, #56FFBC 120deg, #0A0C34 240deg, #56FFBC 360deg);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: white;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 12, 52, 0.15);
+             -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(86, 255, 188, 0.2);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #56FFBC;
+            text-shadow: 0 0 20px rgba(86, 255, 188, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 10px 20px;
+            border-radius: 25px;
+        }
+
+        .nav-links a.active {
+            background: rgba(86, 255, 188, 0.2);
+            color: #56FFBC;
+            border: 1px solid rgba(86, 255, 188, 0.3);
+        }
+
+        .nav-links a:hover {
+            background: rgba(86, 255, 188, 0.1);
+            color: #56FFBC;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            padding: 120px 40px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #56FFBC, #ffffff, #56FFBC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 300% auto;
+            animation: gradientMove 4s ease-in-out infinite;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 80px;
+        }
+
+        .contact-form {
+            background: rgba(10, 12, 52, 0.4);
+             -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(25px);
+            padding: 40px;
+            border-radius: 25px;
+            border: 1px solid rgba(86, 255, 188, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #56FFBC, #0A0C34, #56FFBC);
+            background-size: 200% auto;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .form-title {
+            font-size: 32px;
+            color: #56FFBC;
+            margin-bottom: 30px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #56FFBC;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(86, 255, 188, 0.3);
+            border: 1px solid rgba(86, 255, 188, 0.3);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #56FFBC;
+            background: rgba(86, 255, 188, 0.15);
+            box-shadow: 0 0 20px rgba(86, 255, 188, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, #56FFBC, #0A0C34);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .form-button:hover::before {
+            left: 100%;
+        }
+
+        .form-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(86, 255, 188, 0.4);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .info-card {
+            background: rgba(86, 255, 188, 0.1);
+            border: 1px solid rgba(86, 255, 188, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: #56FFBC;
+            box-shadow: 0 20px 40px rgba(86, 255, 188, 0.2);
+        }
+
+        .info-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+            text-align: center;
+        }
+
+        .info-title {
+            font-size: 24px;
+            color: #56FFBC;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .info-details {
+            text-align: center;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .info-details a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .info-details a:hover {
+            color: #56FFBC;
+        }
+
+        .faq-section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 42px;
+            text-align: center;
+            margin-bottom: 60px;
+            color: #56FFBC;
+            font-weight: bold;
+        }
+
+        .faq-grid {
+            display: grid;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: rgba(10, 12, 52, 0.3);
+             -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            border: 1px solid rgba(86, 255, 188, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: #56FFBC;
+        }
+
+        .faq-question {
+            padding: 25px 30px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: rgba(86, 255, 188, 0.05);
+        }
+
+        .faq-toggle {
+            font-size: 24px;
+            color: #56FFBC;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 30px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 30px 25px;
+            max-height: 200px;
+            opacity: 0.8;
+        }
+
+        .social-section {
+            text-align: center;
+            background: rgba(10, 12, 52, 0.4);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            padding: 50px 40px;
+            border-radius: 25px;
+            border: 1px solid rgba(86, 255, 188, 0.2);
+        }
+
+        .social-title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #56FFBC;
+        }
+
+        .social-description {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #56FFBC, #0A0C34);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #0A0C34, #56FFBC);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .social-link:hover::before {
+            opacity: 1;
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 30px rgba(86, 255, 188, 0.3);
+        }
+
+        .social-link span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .floating-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #56FFBC;
+            border-radius: 50%;
+            animation: floatUp 8s linear infinite;
+            opacity: 0;
+        }
+
+        .particle:nth-child(even) {
+            background: rgba(86, 255, 188, 0.5);
+            animation-duration: 6s;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 100px 20px 40px;
+            }
+            
+            .hero-title {
+                font-size: 36px;
+            }
+            
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .social-links {
+                gap: 15px;
+            }
+            
+            .social-link {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles">
+        <!-- Particles will be generated by JavaScript -->
+    </div>
+
+    <div class="container">
+        <nav class="navbar">
+            <div class="logo">NEXUS</div>
+            <div class="nav-links">
+                <a href="/about.html">Home</a>
+                <a href="/product.html">Products</a>
+                <a href="/about.html">About</a>
+                <a href="/" class="active">Contact</a>
+            </div>
+        </nav>
+
+        <div id="canvas-container"></div>
+
+        <div class="content">
+            <div class="hero-section">
+                <h1 class="hero-title">Get in Touch</h1>
+                <p class="hero-subtitle">
+                    Have questions about our products? Need support? Want to partner with us? 
+                    We'd love to hear from you. Our team is here to help and we typically 
+                    respond within 24 hours.
+                </p>
+            </div>
+
+            <div class="contact-grid">
+                <div class="contact-form">
+                    <h2 class="form-title">Send us a Message</h2>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" placeholder="Enter your email address" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <select title="form" class="form-select" required>
+                                <option value="">Select a subject</option>
+                                <option value="support">Technical Support</option>
+                                <option value="sales">Sales Inquiry</option>
+                                <option value="partnership">Partnership</option>
+                                <option value="feedback">Feedback</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-textarea" placeholder="Tell us how we can help you..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="form-button">Send Message</button>
+                    </form>
+                </div>
+
+                <div class="contact-info">
+                    <div class="info-card">
+                        <span class="info-icon"></span>
+                        <h3 class="info-title">Email Us</h3>
+                        <div class="info-details">
+                            <p>General Inquiries:<br>
+                            <a href="mailto:hello@nexus.com">hello@nexus.com</a></p>
+                            <p>Support Team:<br>
+                            <a href="mailto:support@nexus.com">support@nexus.com</a></p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="info-icon"></span>
+                        <h3 class="info-title">Call Us</h3>
+                        <div class="info-details">
+                            <p>Customer Service:<br>
+                            <a href="tel:+1234567890">+1 (234) 567-8900</a></p>
+                            <p>Technical Support:<br>
+                            <a href="tel:+1234567891">+1 (234) 567-8901</a></p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="info-icon"></span>
+                        <h3 class="info-title">Visit Us</h3>
+                        <div class="info-details">
+                            <p>NEXUS Headquarters<br>
+                            123 Innovation Drive<br>
+                            Tech Valley, CA 94025<br>
+                            United States</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="info-icon"></span>
+                        <h3 class="info-title">Business Hours</h3>
+                        <div class="info-details">
+                            <p>Monday - Friday: 9:00 AM - 6:00 PM PST<br>
+                            Saturday: 10:00 AM - 4:00 PM PST<br>
+                            Sunday: Closed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-section">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What is your return policy?</span>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We offer a 30-day return policy for all products. Items must be in original condition with all accessories and packaging. Free return shipping is provided for defective items.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How long is the warranty?</span>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>All NEXUS products come with a 2-year manufacturer warranty covering defects in materials and workmanship. Extended warranty options are available for purchase.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Do you ship internationally?</span>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, we ship to over 50 countries worldwide. International shipping rates and delivery times vary by location. Customs duties and taxes are the responsibility of the customer.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How can I track my order?</span>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Once your order ships, you'll receive a tracking number via email. You can track your package on our website or directly through the carrier's tracking system.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Are your products compatible with all devices?</span>
+                            <span class="faq-toggle">+</span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our products are designed to work with most modern devices that support Bluetooth 5.0 or higher. Check individual product specifications for detailed compatibility information.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="social-section">
+                <h2 class="social-title">Connect With Us</h2>
+                <p class="social-description">
+                    Follow us on social media for the latest updates, product launches, 
+                    and exclusive behind-the-scenes content.
+                </p>
+                <div class="social-links">
+           <a href="#" class="social-link">
+        <i class="fab fa-facebook-f"></i>
+        </a>
+         <a href="#" class="social-link">
+        <i class="fab fa-instagram"></i>
+    </a>
+    <a href="#" class="social-link">
+        <i class="fab fa-twitter"></i>
+    </a>
+    <a href="#" class="social-link">
+        <i class="fab fa-linkedin-in"></i>
+    </a>
+    <a href="#" class="social-link">
+        <i class="fab fa-youtube"></i>
+    </a>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let scene, camera, renderer, waves = [];
+        let mouseX = 0, mouseY = 0;
+        let clock = new THREE.Clock();
+
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            scene.fog = new THREE.Fog(0x0a0c34, 50, 200);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 20, 80);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Lighting
+            setupLighting();
+            
+            // Create wave formations
+            createWaveFormations();
+            
+            // Create floating particles
+            createFloatingParticles();
+            
+            // Setup interactions
+            setupInteractions();
+            
+            // Start animation
+            animate();
+        }
+
+        function setupLighting() {
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0x56ffbc, 1.5);
+            directionalLight.position.set(50, 50, 30);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            // Multiple dynamic lights
+            for (let i = 0; i < 5; i++) {
+                const pointLight = new THREE.PointLight(
+                    i % 2 === 0 ? 0x56ffbc : 0x0a0c34, 
+                    1, 
+                    100
+                );
+                pointLight.position.set(
+                    (Math.random() - 0.5) * 100,
+                    (Math.random() - 0.5) * 50,
+                    (Math.random() - 0.5) * 50
+                );
+                scene.add(pointLight);
+
+                // Store lights for animation
+                waves.push({
+                    light: pointLight,
+                    originalPosition: pointLight.position.clone(),
+                    speed: 0.001 + Math.random() * 0.002,
+                    radius: 20 + Math.random() * 30
+                });
+            }
+        }
+
+        function createWaveFormations() {
+            // Create wave-like geometries
+            const waveGeometry = new THREE.PlaneGeometry(200, 200, 50, 50);
+            const waveMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0x56ffbc,
+                transparent: true,
+                opacity: 0.1,
+                metalness: 0.8,
+                roughness: 0.2,
+                side: THREE.DoubleSide
+            });
+
+            for (let i = 0; i < 3; i++) {
+                const wave = new THREE.Mesh(waveGeometry, waveMaterial.clone());
+                wave.rotation.x = -Math.PI / 2;
+                wave.position.y = -20 - i * 10;
+                wave.position.z = i * -20;
+                
+                waves.push({
+                    mesh: wave,
+                    speed: 0.01 + i * 0.005,
+                    amplitude: 5 + i * 2
+                });
+                
+                scene.add(wave);
+            }
+
+            // Create floating ring formations
+            const ringGeometry = new THREE.TorusGeometry(15, 2, 16, 100);
+            const ringMaterial = new THREE.MeshPhysicalMaterial({
+                color: 0x0a0c34,
+                transparent: true,
+                opacity: 0.3,
+                metalness: 0.9,
+                roughness: 0.1
+            });
+
+            for (let i = 0; i < 4; i++) {
+                const ring = new THREE.Mesh(ringGeometry, ringMaterial.clone());
+                ring.position.set(
+                    (Math.random() - 0.5) * 100,
+                    (Math.random() - 0.5) * 60,
+                    (Math.random() - 0.5) * 60
+                );
+                ring.rotation.set(
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI,
+                    Math.random() * Math.PI
+                );
+
+                waves.push({
+                    mesh: ring,
+                    rotationSpeed: {
+                        x: (Math.random() - 0.5) * 0.02,
+                        y: (Math.random() - 0.5) * 0.02,
+                        z: (Math.random() - 0.5) * 0.02
+                    }
+                });
+
+                scene.add(ring);
+            }
+        }
+
+        function createFloatingParticles() {
+            const particleCount = 100;
+            const particles = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 200;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
+
+                // Alternating colors
+                if (i % 2 === 0) {
+                    colors[i * 3] = 0.34; // R
+                    colors[i * 3 + 1] = 1.0; // G
+                    colors[i * 3 + 2] = 0.74; // B
+                } else {
+                    colors[i * 3] = 0.04; // R
+                    colors[i * 3 + 1] = 0.05; // G
+                    colors[i * 3 + 2] = 0.2; // B
+                }
+            }
+
+            particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            const particleSystem = new THREE.Points(particles, particleMaterial);
+            scene.add(particleSystem);
+
+            waves.push({
+                particles: particleSystem,
+                originalPositions: positions.slice()
+            });
+        }
+
+        function setupInteractions() {
+            // Form submission
+            document.getElementById('contactForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const button = this.querySelector('.form-button');
+                button.innerHTML = 'Sending...';
+                button.style.background = 'linear-gradient(45deg, #27ae60, #2ecc71)';
+                
+                setTimeout(() => {
+                    button.innerHTML = 'Message Sent!';
+                    setTimeout(() => {
+                        button.innerHTML = 'Send Message';
+                        button.style.background = 'linear-gradient(45deg, #56FFBC, #0A0C34)';
+                        this.reset();
+                    }, 2000);
+                }, 1500);
+            });
+
+            // FAQ interactions
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close all other items
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current item
+                    if (isActive) {
+                        item.classList.remove('active');
+                    } else {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            // Mouse interaction
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            // Generate floating particles for background
+            generateBackgroundParticles();
+
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function generateBackgroundParticles() {
+            const particlesContainer = document.querySelector('.floating-particles');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+                
+                particlesContainer.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 10000);
+            }, 300);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const delta = clock.getDelta();
+            const time = clock.getElapsedTime();
+
+            // Animate waves and objects
+            waves.forEach((item, index) => {
+                if (item.mesh) {
+                    if (item.mesh.geometry.type === 'PlaneGeometry') {
+                        // Wave animation
+                        const positions = item.mesh.geometry.attributes.position.array;
+                        for (let i = 0; i < positions.length; i += 3) {
+                            positions[i + 2] = Math.sin(positions[i] * 0.1 + time * item.speed) * item.amplitude;
+                        }
+                        item.mesh.geometry.attributes.position.needsUpdate = true;
+                    } else if (item.rotationSpeed) {
+                        // Ring rotation
+                        item.mesh.rotation.x += item.rotationSpeed.x;
+                        item.mesh.rotation.y += item.rotationSpeed.y;
+                        item.mesh.rotation.z += item.rotationSpeed.z;
+                    }
+                }
+
+                if (item.light) {
+                    // Animate lights
+                    item.light.position.x = item.originalPosition.x + Math.sin(time * item.speed) * item.radius;
+                    item.light.position.z = item.originalPosition.z + Math.cos(time * item.speed) * item.radius;
+                    item.light.position.y = item.originalPosition.y + Math.sin(time * item.speed * 0.5) * 10;
+                }
+
+                if (item.particles) {
+                    // Animate particle system
+                    const positions = item.particles.geometry.attributes.position.array;
+                    for (let i = 0; i < positions.length; i += 3) {
+                        positions[i + 1] += Math.sin(time + i) * 0.01;
+                        positions[i] += Math.cos(time + i) * 0.005;
+                    }
+                    item.particles.geometry.attributes.position.needsUpdate = true;
+                }
+            });
+
+            // Mouse interaction with camera
+            camera.position.x += (mouseX * 10 - camera.position.x) * 0.05;
+            camera.position.y += (mouseY * 10 + 20 - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Initialize
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
